@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\TemperatureBelowThreshold;
+use App\Events\TemperatureStored;
+use App\Listeners\CheckTemperatureThreshold;
+use App\Listeners\SendTemperatureWarningEmail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +21,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        TemperatureStored::class => [
+            CheckTemperatureThreshold::class,
+        ],
+        TemperatureBelowThreshold::class => [
+            SendTemperatureWarningEmail::class,
+        ],
     ];
 
     /**
@@ -25,7 +34,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        parent::boot();
     }
 
     /**
